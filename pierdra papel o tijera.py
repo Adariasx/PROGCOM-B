@@ -7,16 +7,26 @@ opciones = {
     "Papel": "📄",
     "Tijera": "✂️",
     "Lagarto": "🦎",
-    "Spock": "🖖"
+    "Spock": "🖖",
+    "Ninja": "🥷",
+    "Pirata": "🏴‍☠️",
+    "Dinosaurio": "🦖",
+    "Alien": "👽",
+    "Mago": "🧙"
 }
 
-# Reglas: qué gana a qué
+# Reglas extendidas
 reglas = {
-    "Piedra": ["Tijera", "Lagarto"],
-    "Papel": ["Piedra", "Spock"],
-    "Tijera": ["Papel", "Lagarto"],
-    "Lagarto": ["Spock", "Papel"],
-    "Spock": ["Tijera", "Piedra"]
+    "Piedra": ["Tijera", "Lagarto", "Pirata"],
+    "Papel": ["Piedra", "Spock", "Alien"],
+    "Tijera": ["Papel", "Lagarto", "Ninja"],
+    "Lagarto": ["Spock", "Papel", "Mago"],
+    "Spock": ["Tijera", "Piedra", "Alien"],
+    "Ninja": ["Pirata", "Mago", "Papel"],
+    "Pirata": ["Alien", "Ninja", "Lagarto"],
+    "Dinosaurio": ["Piedra", "Tijera", "Pirata"],
+    "Alien": ["Dinosaurio", "Ninja", "Spock"],
+    "Mago": ["Alien", "Dinosaurio", "Piedra"]
 }
 
 # Colores para los botones
@@ -25,13 +35,18 @@ colores = {
     "Papel": "#ffffff",
     "Tijera": "#ff6666",
     "Lagarto": "#77dd77",
-    "Spock": "#87cefa"
+    "Spock": "#87cefa",
+    "Ninja": "#2c2c2c",
+    "Pirata": "#8b4513",
+    "Dinosaurio": "#006400",
+    "Alien": "#7fffd4",
+    "Mago": "#9370db"
 }
 
 class JuegoPPTLS:
     def __init__(self, master):
         self.master = master
-        master.title("Piedra Papel Tijera Lagarto Spock ✨")
+        master.title("Mega Piedra Papel Tijera EXTREMO ⚔️")
 
         # Variables para el marcador
         self.puntos_usuario = 0
@@ -40,10 +55,12 @@ class JuegoPPTLS:
         self.label = tk.Label(master, text="Elige tu jugada:", font=("Arial", 14))
         self.label.pack(pady=10)
 
+        # Frame de botones (en dos filas porque ahora son muchos)
         self.frame_botones = tk.Frame(master)
         self.frame_botones.pack()
 
-        # Crear botones con colores y emojis
+        fila = 0
+        col = 0
         for opcion, emoji in opciones.items():
             btn = tk.Button(
                 self.frame_botones,
@@ -53,7 +70,11 @@ class JuegoPPTLS:
                 bg=colores[opcion],
                 command=lambda op=opcion: self.jugar(op)
             )
-            btn.pack(side=tk.LEFT, padx=5, pady=5)
+            btn.grid(row=fila, column=col, padx=5, pady=5)
+            col += 1
+            if col == 5:  # para pasar a segunda fila
+                fila += 1
+                col = 0
 
         # Marcador
         self.marcador = tk.Label(master, text="👤 0 - 0 🤖", font=("Arial", 14, "bold"), fg="darkblue")
