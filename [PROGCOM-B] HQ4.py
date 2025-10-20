@@ -331,7 +331,7 @@ def mostrar_resultados():
                         padx=20, pady=10,
                         command=root.quit)
     btn_salir.pack(side='left', padx=10)
-xd="kLqF22Dlfxlsd08pL2/ZD6l5FLUmGp5PQRPqqXEF8TE"  
+
 def mostrar_ventana_gemini_gano(ventana_anterior):
     ventana_anterior.destroy()
     
@@ -418,7 +418,7 @@ def iniciar_partida():
     
     construir_interfaz_competicion()
     threading.Thread(target=gemini_jugar, daemon=True).start()
-
+xd=                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "AIzaSyCsAzIHL76K8noqpjO0MgT8Qv0dJc_QpC0"
 def construir_interfaz_competicion():
     global campos_texto, labels_gemini, btn_stop
     
