@@ -28,10 +28,10 @@ public class taller_java {
         if (mayorDeEdad) {
             System.out.println("Eres mayor de edad");
         } else {
-            System.out.println("Eres menor de edad");
+            System.out.println("agugu gaga");
         }
         
-        //ejercicio muy facil
+        //ejercicio muy facil xdd
         System.out.println("Eso es todo amigos");
     }
 }
