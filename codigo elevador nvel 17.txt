@@ -1,0 +1,97 @@
+{
+    /* This is my (Angel Arias) solution to Elevator Saga at http://play.elevatorsaga.com/ */
+    /* This code plows through all challenges from #1 to #17. However, note:
+     * In challenge #6, you need to change one of the for-loops, below. (Indicated in comments.)
+     * In the max-wait challenges, you may need to click Restart a few ones to get better luck.
+     */
+    /* Check out my programming-related YouTube channel! http://youtube.com/user/Bisqwit */
+    
+    init: function(elevators, floors) {
+        var bot=999, top=-1, upOrder={}, dnOrder={}, age={}, totalage=1;
+        
+        floors.forEach(function(f) {
+            var fn = f.floorNum();
+            // Find top and bottom floors
+            if(fn > top) top = fn;
+            if(fn < bot) bot = fn;
+            f.on("up_button_pressed",   function() { upOrder[fn] = fn; } );
+            f.on("down_button_pressed", function() { dnOrder[fn] = fn; } );
+            age[fn] = 0;
+        });
+ 
+        //elevators.pop(); // Uncomment for challenge #6
+        elevators.forEach(function(e) { 
+            var curdir=0;
+            e.goingUpIndicator(true);
+            e.goingDownIndicator(true);
+            e.pOrder = {};
+            // goTo: Register a new target
+            e.goTo  = function(f, now) {
+                var cur = e.currentFloor();
+                //console.log("goto " + f, pOrder,dnOrder,upOrder);
+                if(f != cur) { if(f < cur) curdir=-1; else curdir=1; }
+                e.goToFloor(f, now);
+                // There's a promise we will go to this floor, so delete it
+                delete e.pOrder[f];
+                delete upOrder[f];
+                delete dnOrder[f];
+            };
+            e.on("floor_button_pressed", function(num){ e.pOrder[num]=num; });
+            e.on("passing_floor", function(f,dir) {
+                if(e.pOrder[f] || (e.loadFactor() < 0.3 && (
+                                  (/*dir=="up" &&*/ upOrder[f])
+                               || (/*dir=="down" &&*/ dnOrder[f]) )))
+                {
+                    e.goTo(f, true);
+                }
+            });
+            e.on("stopped_at_floor", function(f) {
+                // Are we at top floor? We are going down next.
+                var cur = e.currentFloor();
+                if(cur == top) curdir = -1;
+                if(cur == bot) curdir = 1;
+                // We have arrived at this floor.
+                age[f] = ++totalage;
+            });
+            e.on("idle", function(){
+                var cur = e.currentFloor(),  bestscore=top*2, target = -1;//Math.floor(Math.random() * (top+1));
+                //console.log("cur="+cur, pOrder);
+                // Pick a target. Check each floor first.
+                var orders = [e.pOrder,upOrder,dnOrder];
+                if(e.loadFactor() >= 0.02) orders = [e.pOrder]; // too full
+                for(var oi in orders) for(var order in orders[oi])
+                {
+                    if(order == cur) { continue; } // Ignore requests to go to the same floor...
+                    // The score (really penalty) is the distance to the current floor
+                    var score = Math.abs(order - cur) + (age[order]-totalage);
+                    //if(curdir != 0 && (curdir > 0) != (order > cur)) score += totalage; // Orders to change direction are ranked low
+                    
+                    // If we don't have any passengers, downrank floors that _other_ elevators are heading towards
+                    if(e.pOrder.length == 0)
+                        for(var ei in elevators)
+                            if(elevators[ei].pOrder[order])
+                            {
+                                // What is the probility the other elevator will head to this floor _next_?
+                                var unprob = Math.abs(order - elevators[ei].currentFloor()) + elevators[ei].pOrder.length;
+                                score += top/unprob;
+                            }
+                    
+                    if(score < bestscore) { bestscore=score; target=order; }
+                }
+                // Now get the highest ranking candidate, and honor it.
+                if(target == -1) { e.goTo(cur, true); return; } // This will just re-launch the "idle" code
+                /* There is one special case that needs to be worked on.
+                 * Suppose one elevator is empty and decides to go
+                 * towards a floor to pick up passengers (based on upOrder/dnOrder).
+                 * Now there's another elevator that has passengers who want to leave
+                 * at that same floor (its pOrder), but he's still busy heading to another floor.
+                 * There's a high chance both elevators will rush to the same floor at the same time.
+                 */
+                e.goTo(target);
+            });
+        });
+    },
+    update: function(dt, elevators, floors) {
+        // We normally don't need to do anything here
+    }
+}
