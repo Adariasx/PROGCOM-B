@@ -1,0 +1,50 @@
+/*
+ * https://youtu.be/xHjXwhLbAHI
+ */
+
+public class coreografia_jav {
+
+    public static void mover_cadera(int a, int b) {
+        for (int j = 0; j < b; j++) {
+            for (int i = 0; i < a; i++) {
+                System.out.println("👉 Mueve la cadera a la derecha");
+            }
+            for (int i = 0; i < a; i++) {
+                System.out.println("👈 Mueve la cadera a la izquierda");
+            }
+        }
+    }
+
+    public static void derechaFull(int a) {
+        for (int i = 0; i < a; i++) {
+            System.out.println("👉 Mueve la cadera a la derecha");
+        }
+    }
+
+    public static void girar() {
+        System.out.println("🙌 Mano izquierda se junta con mano derecha");
+        System.out.println("🙌 Posición de D.va");
+    }
+
+    public static void coreografia() {
+        System.out.println("\n--- ¡Inicia la coreografía Nippon Egao Hyakkei! ---\n");
+        System.out.println("🔄 Salta y Gira sobre ti mismo");
+        
+        mover_cadera(2, 3);
+        mover_cadera(1, 3);
+        mover_cadera(2, 3);
+        mover_cadera(1, 2);
+        
+        System.out.println("🩵 se cae azul");
+        
+        derechaFull(4);
+        mover_cadera(2, 3);
+
+        System.out.println("\n--- ¡Fin de la coreografía! ---");
+    }
+
+    public static void main(String[] args) {
+        coreografia();
+    }
+}
+
